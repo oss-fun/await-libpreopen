@@ -91,7 +91,7 @@ po_map_foreach(const struct po_map *map, po_map_iter_cb cb)
 	for (n = 0; n < map->length; n++) {
 		entry = map->entries + n;
 
-		if (!cb(entry->name, entry->fd, entry->rights)) {
+		if (!cb(entry->name, entry->fd)) {
 			break;
 		}
 	}

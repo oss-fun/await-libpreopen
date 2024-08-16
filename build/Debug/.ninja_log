@@ -1,0 +1,14 @@
+# ninja log v5
+0	5	0	clean	a31eedcededa8236
+1	41	1723788219063787053	lib/CMakeFiles/preopen.dir/po_err.c.o	349ad973879827d9
+0	49	1723788289573501846	build.ninja	22af1616f470b318
+1	46	1723788289573501846	build.ninja	22af1616f470b318
+1	39	1723788289617500420	lib/CMakeFiles/preopen.dir/po_err.c.o	349ad973879827d9
+1	41	1723788347475625112	lib/CMakeFiles/preopen.dir/po_err.c.o	349ad973879827d9
+0	42	1723788347475625112	lib/CMakeFiles/preopen.dir/libpreopen.c.o	be175080248fa8e2
+0	35	1723788687640597874	lib/CMakeFiles/preopen.dir/po_map.c.o	8b462ae6ff76b6ae
+1	43	1723788902753623454	lib/CMakeFiles/preopen.dir/po_pack.c.o	3431b1c96fc0b7d
+1	46	1723788928024804069	lib/CMakeFiles/preopen.dir/po_pack.c.o	3431b1c96fc0b7d
+1	45	1723789145141764135	lib/CMakeFiles/preopen.dir/po_pack.c.o	3431b1c96fc0b7d
+0	50	1723789559144339498	lib/CMakeFiles/preopen.dir/po_libc_wrappers.c.o	330e8bca4ff1ae7
+51	76	1723789559168338720	lib/libpreopen.so	c3d6d521ccfc59d8

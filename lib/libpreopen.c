@@ -82,7 +82,7 @@ po_add(struct po_map *map, const char *path, int fd)
 }
 
 struct po_relpath
-po_find(struct po_map* map, const char *path, cap_rights_t *rights)
+po_find(struct po_map* map, const char *path)
 {
 	const char *relpath ;
 	struct po_relpath match = { .relative_path = NULL, .dirfd = -1 };
@@ -174,7 +174,8 @@ po_preopen(struct po_map *map, const char *path, int flags, ...)
 }
 
 bool
-po_print_entry(const char *name, int fd, cap_rights_t rights)
+po_print_entry(const char *name, int fd)
+	//cap_rights_t rights)
 {
 	printf(" - name: '%s', fd: %d, rights: <rights>\n",
 	       name, fd);

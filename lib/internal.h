@@ -41,12 +41,12 @@
 #include <sys/cdefs.h>
 
 #ifdef WITH_CAPSICUM
-#include <sys/capsicum.h>
+//#include <sys/capsicum.h>
 #endif
 
 #include <assert.h>
 #include <stdbool.h>
-
+#include <fcntl.h>
 #include "libpreopen.h"
 
 /**

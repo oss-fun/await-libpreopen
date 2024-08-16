@@ -63,7 +63,7 @@ static struct po_map *global_map;
  * @returns  a struct po_relpath with dirfd and relative_path as set by po_find
  *           if there is an available po_map, or AT_FDCWD/path otherwise
  */
-static struct po_relpath find_relative(const char *path, cap_rights_t *);
+static struct po_relpath find_relative(const char *path);//cap_rights_t *);
 
 /**
  * Get the map that was handed into the process via `SHARED_MEMORYFD`
@@ -96,7 +96,7 @@ _open(const char *path, int flags, ...)
 
 	va_start(args, flags);
 	mode = va_arg(args, int);
-	rel = find_relative(path, NULL);
+	rel = find_relative(path);
 
 	// If the file is already opened, no need of relative opening!
 	if( strcmp(rel.relative_path,".") == 0 )
@@ -119,7 +119,7 @@ _open(const char *path, int flags, ...)
 int
 access(const char *path, int mode)
 {
-	struct po_relpath rel = find_relative(path, NULL);
+	struct po_relpath rel = find_relative(path);
 
 	return faccessat(rel.dirfd, rel.relative_path, mode,0);
 }
@@ -135,20 +135,23 @@ access(const char *path, int mode)
  * wrapper will call `connectat(AT_FDCWD, original_path, ...)`, which is the
  * same as the unwrapped `connect(2)` call (i.e., will fail with `ECAPMODE`).
  */
-int
+/*
+	int
 connect(int s, const struct sockaddr *name, socklen_t namelen)
 {
 	struct po_relpath rel;
 
 	if (name->sa_family == AF_UNIX) {
 	    struct sockaddr_un *usock = (struct sockaddr_un *)name;
-	    rel = find_relative(usock->sun_path, NULL);
-	    strlcpy(usock->sun_path, rel.relative_path, sizeof(usock->sun_path));
+	    rel = find_relative(usock->sun_path);
+	    //strlcpy(usock->sun_path, rel.relative_path, sizeof(usock->sun_path));
+	    snprintf((usock->sun_path), sizeof(usock->sun_path), "%s", rel.relative_path);
 	    return connectat(rel.dirfd, s, name, namelen);
 	}
 
 	return connectat(AT_FDCWD, s, name, namelen);
 }
+*/
 
 /**
  * Capability-safe wrapper around the `eaccess(2)` system call.
@@ -164,7 +167,7 @@ connect(int s, const struct sockaddr *name, socklen_t namelen)
 int
 eaccess(const char *path, int mode)
 {
-	struct po_relpath rel = find_relative(path, NULL);
+	struct po_relpath rel = find_relative(path);
 
 	return faccessat(rel.dirfd, rel.relative_path, mode, 0);
 }
@@ -183,7 +186,7 @@ eaccess(const char *path, int mode)
 int
 lstat(const char *path, struct stat *st)
 {
-	struct po_relpath rel = find_relative(path, NULL);
+	struct po_relpath rel = find_relative(path);
 
 	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
 }
@@ -219,8 +222,8 @@ open(const char *path, int flags, ...)
 int
 rename(const char *from, const char *to)
 {
-	struct po_relpath rel_from = find_relative(from, NULL);
-	struct po_relpath rel_to = find_relative(to, NULL);
+	struct po_relpath rel_from = find_relative(from);
+	struct po_relpath rel_to = find_relative(to);
 
 	return renameat(rel_from.dirfd, rel_from.relative_path, rel_to.dirfd,
 		rel_to.relative_path);
@@ -240,7 +243,7 @@ rename(const char *from, const char *to)
 int
 stat(const char *path, struct stat *st)
 {
-	struct po_relpath rel = find_relative(path, NULL);
+	struct po_relpath rel = find_relative(path);
 
 	return fstatat(rel.dirfd, rel.relative_path,st, AT_SYMLINK_NOFOLLOW);
 }
@@ -259,7 +262,7 @@ stat(const char *path, struct stat *st)
 int
 unlink(const char *path)
 {
-	struct po_relpath rel = find_relative(path, NULL);
+	struct po_relpath rel = find_relative(path);
 
 	return unlinkat(rel.dirfd, rel.relative_path, 0);
 }
@@ -282,7 +285,7 @@ unlink(const char *path)
 void *
 dlopen(const char *path, int mode)
 {
-	struct po_relpath rel = find_relative(path, NULL);
+	struct po_relpath rel = find_relative(path);
 
 	return fdlopen(openat(rel.dirfd, rel.relative_path, 0, mode), mode);
 }
@@ -303,7 +306,7 @@ po_set_libc_map(struct po_map *map)
 }
 
 static struct po_relpath
-find_relative(const char *path, cap_rights_t *rights)
+find_relative(const char *path)
 {
 	struct po_relpath rel;
 	struct po_map *map;
@@ -313,7 +316,7 @@ find_relative(const char *path, cap_rights_t *rights)
 		rel.dirfd = AT_FDCWD;
 		rel.relative_path = path;
 	} else {
-		rel = po_find(map, path, NULL);
+		rel = po_find(map, path);
 	}
 
 	return (rel);

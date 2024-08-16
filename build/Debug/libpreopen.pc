@@ -1,0 +1,9 @@
+prefix=/usr/local
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libpreopen
+Description: Capability-safe libc wrappers for sandboxing
+Version: 0.0.1
+Libs: -L${libdir} -lpreopen
+Cflags: -I${includedir}

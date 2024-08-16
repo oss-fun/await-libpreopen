@@ -33,6 +33,7 @@
  * @file  po_pack.c
  * @brief Code for [in]packing po_map into/from dense shared memory segments
  */
+#include <stdio.h>
 
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -43,7 +44,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
 #include "internal.h"
 
 /**
@@ -96,7 +96,7 @@ po_pack(struct po_map *map)
 
 	po_map_assertvalid(map);
 
-	fd = shm_open(SHM_ANON, O_CREAT | O_RDWR, 0600);
+	fd = shm_open("shm_preopen", O_CREAT | O_RDWR, 0600);
 	if (fd == -1){
 		po_errormessage("failed to shm_open SHM for packed map");
 		return (-1);
@@ -135,8 +135,8 @@ po_pack(struct po_map *map)
 		entry->fd = map->entries[i].fd;
 		entry->offset = offset;
 		entry->len = strlen(map->entries[i].name);
-		strlcpy(strtab + offset, map->entries[i].name,
-			chars - offset);
+		//strlcpy(strtab + offset, map->entries[i].name,chars - offset);
+		snprintf((strtab + offset), (chars - offset), "%s",(map->entries[i].name)); 
 
 		offset += entry->len;
 	}
